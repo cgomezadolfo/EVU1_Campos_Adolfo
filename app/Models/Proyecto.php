@@ -18,7 +18,8 @@ class Proyecto extends Model
         'fecha_fin',
         'estado',
         'responsable',
-        'monto'
+        'monto',
+        'created_by'
     ];
 
     protected $casts = [
@@ -49,6 +50,12 @@ class Proyecto extends Model
     public function scopePorMontoEntre($query, $montoMin, $montoMax)
     {
         return $query->whereBetween('monto', [$montoMin, $montoMax]);
+    }
+
+    // Relación con el usuario que creó el proyecto
+    public function creador()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     // Accessor para formatear el monto

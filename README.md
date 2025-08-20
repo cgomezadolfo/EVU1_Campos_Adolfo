@@ -13,24 +13,148 @@ Este es un sistema moderno de gestión de proyectos desarrollado con Laravel par
 - ✅ **Actualizar proyecto por ID** - `PUT /api/proyectos/{id}`
 - ✅ **Eliminar proyecto por ID** - `DELETE /api/proyectos/{id}`
 
+### Sistema de Autenticación y Autorización ✅ ACTUALIZADO
+- ✅ **Registro de Usuario** - `POST /api/auth/registro`
+- ✅ **Inicio de Sesión con JWT** - `POST /api/auth/login`
+- ✅ **Cerrar Sesión** - `POST /api/auth/logout`
+- ✅ **Usuario Autenticado** - `GET /api/auth/usuario`
+- ✅ **Refrescar Token JWT** - `POST /api/auth/refresh`
+
+### Modelos y Seeders ✅ IMPLEMENTADO
+- ✅ **Modelo Usuario**: ID, Nombre, Correo (único), Clave cifrada
+- ✅ **Modelo Proyecto (Actualizado)**: ID, Nombre, Fecha de Inicio, Estado, Responsable, Monto, created_by
+- ✅ **UserSeeder**: 8 usuarios de prueba con credenciales corporativas
+- ✅ **ProyectoSeeder**: 8 proyectos con relaciones a usuarios creadores
+
 ## Tecnologías Utilizadas
 
 - **Laravel Framework** - Framework PHP moderno
-- **SQLite** - Base de datos ligera para desarrollo
+- **JWT Auth** - Sistema de autenticación con JSON Web Tokens
+- **Laravel Sanctum** - Sistema de autenticación API con tokens
+- **MySQL** - Base de datos relacional robusta
 - **Eloquent ORM** - Para manejo de modelos y relaciones
+- **Cifrado Hash** - Bcrypt para protección de contraseñas
 
 ## Instalación y Configuración
 
+### Configuración de Base de Datos MySQL
+1. **Crear la base de datos manualmente** en MySQL:
+   ```sql
+   CREATE DATABASE desarrollo_software_1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+2. **Configurar variables de entorno** en el archivo `.env`:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=desarrollo_software_1
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+3. **Comando personalizado para crear la base de datos** (opcional):
+   ```bash
+   php artisan db:crear
+   ```
+
+### Instalación del Proyecto
 1. Navega al directorio del proyecto: `cd c:\laragon\www\ev-1-adolfoCampos-yerkoGuerra`
 2. Instala las dependencias: `composer install`
-3. Configura el archivo `.env` con la configuración de base de datos
-4. Ejecuta las migraciones: `php artisan migrate`
+3. Configura el archivo `.env` con la configuración de MySQL (ver arriba)
+4. Ejecuta las migraciones: `php artisan migrate` o usa `php artisan db:crear`
 5. (Opcional) Carga datos de ejemplo: `php artisan db:seed --class=ProyectoSeeder`
 6. Inicia el servidor: `php artisan serve`
 
 El servidor estará disponible en: `http://127.0.0.1:8000`
 
+## Rutas Web Disponibles
+
+### Rutas Públicas
+- `GET /login` - Vista de inicio de sesión
+- `GET /registro` - Vista de registro de usuario
+- `GET /` - Redirección automática al dashboard o login
+
+### Rutas Protegidas (requieren JWT)
+- `GET /dashboard` - Panel principal del sistema
+
+### Rutas API Públicas
+- `POST /api/auth/registro` - Registro de usuario
+- `POST /api/auth/login` - Inicio de sesión con JWT
+- `POST /api/auth/refresh` - Refrescar token JWT
+
+### Rutas API Protegidas (requieren JWT)
+- `POST /api/auth/logout` - Cerrar sesión
+- `GET /api/auth/usuario` - Obtener usuario autenticado
+- `GET /api/proyectos` - Listar proyectos
+- `POST /api/proyectos` - Crear nuevo proyecto
+- `GET /api/proyectos/{id}` - Obtener proyecto por ID
+- `PUT /api/proyectos/{id}` - Actualizar proyecto
+- `DELETE /api/proyectos/{id}` - Eliminar proyecto
+
+## Comandos Artisan Personalizados
+
+- `php artisan db:crear` - Crear la base de datos MySQL automáticamente
+- `php artisan usuario:crear` - Crear usuarios de prueba interactivamente
+- `php artisan db:seed` - Poblar la base de datos con usuarios y proyectos de prueba
+
 ## Estructura de la Base de Datos
+
+### Tabla: users (Usuarios del Sistema)
+- `id` - Clave primaria
+- `name` - Nombre completo del usuario
+- `email` - Correo electrónico único
+- `password` - Contraseña cifrada con Hash
+- `email_verified_at` - Fecha de verificación de email
+- `last_login_at` - Fecha y hora del último acceso
+- `last_login_ip` - Dirección IP del último acceso
+
+### Tabla: proyectos (Proyectos del Sistema) ✅ ACTUALIZADA
+- `id` - Clave primaria
+- `nombre` - Nombre del proyecto
+- `descripcion` - Descripción detallada
+- `fecha_inicio` - Fecha de inicio del proyecto
+- `fecha_fin` - Fecha de finalización (puede ser nula)
+- `estado` - Estado del proyecto (pendiente, en_progreso, completado)
+- `responsable` - Nombre del responsable del proyecto
+- `monto` - Monto asignado al proyecto (decimal)
+- `created_by` - ID del usuario que creó el proyecto (Foreign Key)
+
+### Seeders de Datos de Prueba
+Los seeders proporcionan datos realistas para desarrollo y pruebas:
+
+**UserSeeder**: Crea 8 usuarios corporativos:
+- ana.garcia@techsolutions.com
+- carlos.rodriguez@techsolutions.com  
+- maria.fernandez@techsolutions.com
+- jose.torres@techsolutions.com
+- laura.jimenez@techsolutions.com
+- roberto.vasquez@techsolutions.com
+- diana.morales@techsolutions.com
+- fernando.castillo@techsolutions.com
+
+**ProyectoSeeder**: Crea 8 proyectos empresariales:
+- Sistema de Gestión Corporativa ($125,000)
+- Aplicación Móvil de Ventas ($85,000)
+- Portal Web de Clientes ($95,000)
+- Sistema de Inventario ($110,000)
+- Plataforma de E-learning ($140,000)
+- Sistema de Facturación Electrónica ($75,000)
+- Dashboard de Analíticas ($90,000)
+- Sistema de Recursos Humanos ($160,000)
+
+*Todos los usuarios tienen la contraseña: `MiClave123!`*
+- `last_login_ip` - IP del último acceso
+- `created_at` - Fecha de registro
+- `updated_at` - Fecha de actualización
+
+### Tabla: personal_access_tokens (Tokens de Autenticación)
+- `id` - Clave primaria
+- `tokenable_id` - ID del usuario propietario
+- `name` - Nombre del token
+- `token` - Token cifrado
+- `abilities` - Permisos del token
+- `expires_at` - Fecha de expiración
 
 ### Tabla: proyectos
 - `id` - Clave primaria
@@ -46,15 +170,68 @@ El servidor estará disponible en: `http://127.0.0.1:8000`
 
 ## Uso de la API
 
-### Endpoints Disponibles
+### Endpoints de Autenticación
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/proyectos` | Obtener todos los proyectos |
-| POST | `/api/proyectos` | Crear un nuevo proyecto |
-| GET | `/api/proyectos/{id}` | Obtener un proyecto específico |
-| PUT | `/api/proyectos/{id}` | Actualizar un proyecto |
-| DELETE | `/api/proyectos/{id}` | Eliminar un proyecto |
+| Método | Endpoint | Descripción | Autenticación |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/registro` | Registrar nuevo usuario | No |
+| POST | `/api/auth/login` | Iniciar sesión | No |
+| POST | `/api/auth/logout` | Cerrar sesión | Sí |
+| GET | `/api/auth/perfil` | Obtener perfil del usuario | Sí |
+
+### Endpoints de Gestión de Proyectos
+
+| Método | Endpoint | Descripción | Autenticación |
+|--------|----------|-------------|---------------|
+| GET | `/api/proyectos` | Obtener todos los proyectos | Opcional |
+| POST | `/api/proyectos` | Crear un nuevo proyecto | Opcional |
+| GET | `/api/proyectos/{id}` | Obtener un proyecto específico | Opcional |
+| PUT | `/api/proyectos/{id}` | Actualizar un proyecto | Opcional |
+| DELETE | `/api/proyectos/{id}` | Eliminar un proyecto | Opcional |
+
+### Ejemplos de Uso - Autenticación
+
+#### 1. Registrar Usuario
+```json
+POST /api/auth/registro
+Content-Type: application/json
+
+{
+    "nombre": "Juan Pérez",
+    "email": "juan@empresa.com",
+    "password": "MiClave123!",
+    "confirmar_password": "MiClave123!"
+}
+```
+
+#### 2. Iniciar Sesión (Devuelve JWT si credenciales son correctas)
+```json
+POST /api/auth/login
+Content-Type: application/json
+
+{
+    "email": "juan@empresa.com",
+    "password": "MiClave123!"
+}
+
+// Respuesta exitosa con JWT:
+{
+    "exito": true,
+    "mensaje": "Inicio de sesión exitoso",
+    "datos": {
+        "usuario": {...},
+        "jwt_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+        "tipo_token": "Bearer",
+        "expira_en": "60 minutos"
+    }
+}
+```
+
+#### 3. Usar JWT Token en Peticiones Protegidas
+```json
+GET /api/auth/usuario
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+```
 
 ### Ejemplo de Estructura JSON para Proyecto
 
@@ -128,6 +305,8 @@ Este proyecto está en desarrollo activo. Se irán agregando nuevas funcionalida
 - `GET /api/proyectos/{id}/verificar` - Verificar existencia de proyecto
 
 ### Pruebas Realizadas:
+
+#### Gestión de Proyectos:
 - ✅ GET `/api/proyectos` - Lista proyectos con estadísticas completas (monto total, promedio, etc.)
 - ✅ GET `/api/proyectos/{id}?detalle=true` - Obtiene proyecto con todos los campos nuevos
 - ✅ POST `/api/proyectos` - Crea proyectos con responsable y monto
@@ -136,7 +315,30 @@ Este proyecto está en desarrollo activo. Se irán agregando nuevas funcionalida
 - ✅ Todos los controladores específicos actualizados y funcionando
 - ✅ Servidor funcionando en `http://127.0.0.1:8000`
 
-**El modelo Proyecto ha sido actualizado exitosamente con los nuevos campos solicitados: ID, Nombre, Fecha de Inicio, Estado, Responsable y Monto. Todos los controladores han sido actualizados para manejar estos campos correctamente.**
+#### Sistema de Autenticación: ✅ ACTUALIZADO CON JWT
+- ✅ POST `/api/auth/registro` - Registro con cifrado de clave (StatusCode: 201) ✅ JWT devuelto
+- ✅ POST `/api/auth/login` - Inicio de sesión devuelve JWT si credenciales son correctas (StatusCode: 200)
+- ✅ POST `/api/auth/logout` - Cierre de sesión invalidando JWT
+- ✅ GET `/api/auth/usuario` - Usuario autenticado con JWT
+- ✅ POST `/api/auth/refresh` - Refrescar token JWT
+- ✅ **Controlador de Autenticación** implementado con conexión a modelos
+- ✅ **Función de Registro** con cifrado de clave implementada
+- ✅ **Función de Inicio de Sesión** que devuelve JWT si credenciales son correctas
+- ✅ Validaciones de seguridad implementadas
+- ✅ Rate limiting configurado (5 registros/min, 10 logins/min)
+- ✅ Logging de eventos de seguridad
+- ✅ Migración de campos de seguimiento ejecutada
+- ✅ POST `/api/proyectos` - Crea proyectos con responsable y monto
+- ✅ Migración exitosa de campos `responsable` y `monto`
+- ✅ Seeder actualizado con datos completos funcionando
+- ✅ Todos los controladores específicos actualizados y funcionando
+- ✅ Servidor funcionando en `http://127.0.0.1:8000`
+
+**El sistema ahora cuenta con un Controlador de Autenticación completo que conecta las rutas con los modelos definidos, implementando:**
+- ✅ **Función de Registro de Usuario** con cifrado de clave usando Hash::make()
+- ✅ **Función de Inicio de Sesión** que devuelve JWT si las credenciales son correctas
+- ✅ **Conexión directa con modelo User** para validaciones y operaciones
+- ✅ **Sistema JWT** configurado y funcional con tymon/jwt-auth
 
 ## Interfaz Web Implementada
 

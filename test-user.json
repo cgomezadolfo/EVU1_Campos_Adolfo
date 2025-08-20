@@ -1,0 +1,6 @@
+{
+    "name": "Usuario MySQL",
+    "email": "usuario@mysql.com",
+    "password": "MiClave123!",
+    "password_confirmation": "MiClave123!"
+}

@@ -10,14 +10,51 @@ use App\Http\Controllers\ActualizarProyectoController;
 use App\Http\Controllers\EliminarProyectoController;
 use App\Http\Controllers\ObtenerProyectoPorIdController;
 use App\Http\Controllers\UFController;
+use App\Http\Controllers\AutenticacionController;
+use App\Http\Controllers\AutenticacionJWTController;
+
+// ==============================================
+// RUTAS DE AUTENTICACIÓN Y AUTORIZACIÓN
+// ==============================================
+
+// Rutas públicas de autenticación (sin middleware)
+Route::prefix('auth')->group(function () {
+    
+    // 1. Registro de Usuario con cifrado de clave
+    Route::post('/registro', [AutenticacionJWTController::class, 'registroUsuario'])
+        ->name('auth.registro.jwt')
+        ->middleware('throttle:5,1'); // Máximo 5 intentos por minuto
+    
+    // 2. Inicio de Sesión que devuelve JWT si las credenciales son correctas
+    Route::post('/login', [AutenticacionJWTController::class, 'inicioSesion'])
+        ->name('auth.login.jwt')
+        ->middleware('throttle:10,1'); // Máximo 10 intentos por minuto
+        
+    // Refrescar JWT
+    Route::post('/refresh', [AutenticacionJWTController::class, 'refrescarToken'])
+        ->name('auth.refresh.jwt')
+        ->middleware('throttle:6,1');
+});
+
+// Rutas protegidas de autenticación (con middleware JWT)
+Route::middleware('auth:api')->prefix('auth')->group(function () {
+    
+    // Cerrar sesión (invalidar JWT)
+    Route::post('/logout', [AutenticacionJWTController::class, 'cerrarSesion'])
+        ->name('auth.logout.jwt');
+    
+    // Obtener usuario autenticado con JWT
+    Route::get('/usuario', [AutenticacionJWTController::class, 'obtenerUsuario'])
+        ->name('auth.usuario.jwt');
+});
 
 // Ruta para obtener información del usuario autenticado (ruta por defecto de Laravel)
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Rutas específicas para la API de gestión de proyectos
-Route::prefix('proyectos')->group(function () {
+// Rutas específicas para la API de gestión de proyectos (protegidas con JWT)
+Route::middleware(['jwt.auth'])->prefix('proyectos')->group(function () {
     
     // 1. Crear un nuevo proyecto
     Route::post('/', [CrearProyectoController::class, 'crear'])

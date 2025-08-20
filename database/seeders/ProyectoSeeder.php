@@ -15,6 +15,9 @@ class ProyectoSeeder extends Seeder
     {
         // Limpiar tabla antes de llenarla con datos actualizados
         Proyecto::truncate();
+        
+        // Obtener los IDs de los usuarios creados
+        $usuariosIds = \App\Models\User::pluck('id')->toArray();
 
         $proyectos = [
             [
@@ -24,7 +27,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-06-30',
                 'estado' => 'en_progreso',
                 'responsable' => 'Ana García Martínez',
-                'monto' => 125000.00
+                'monto' => 125000.00,
+                'created_by' => $usuariosIds[0] ?? 1
             ],
             [
                 'nombre' => 'Aplicación Móvil de Ventas',
@@ -33,7 +37,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-04-15',
                 'estado' => 'pendiente',
                 'responsable' => 'Carlos Rodríguez López',
-                'monto' => 85000.00
+                'monto' => 85000.00,
+                'created_by' => $usuariosIds[1] ?? 1
             ],
             [
                 'nombre' => 'Portal Web de Clientes',
@@ -42,7 +47,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2024-12-31',
                 'estado' => 'completado',
                 'responsable' => 'María Fernández Silva',
-                'monto' => 95000.00
+                'monto' => 95000.00,
+                'created_by' => $usuariosIds[2] ?? 1
             ],
             [
                 'nombre' => 'Sistema de Inventario',
@@ -51,7 +57,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-05-30',
                 'estado' => 'pendiente',
                 'responsable' => 'José Torres Mendoza',
-                'monto' => 110000.00
+                'monto' => 110000.00,
+                'created_by' => $usuariosIds[3] ?? 1
             ],
             [
                 'nombre' => 'Plataforma de E-learning',
@@ -60,7 +67,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-02-28',
                 'estado' => 'en_progreso',
                 'responsable' => 'Laura Jiménez Castro',
-                'monto' => 140000.00
+                'monto' => 140000.00,
+                'created_by' => $usuariosIds[4] ?? 1
             ],
             [
                 'nombre' => 'Sistema de Facturación Electrónica',
@@ -69,7 +77,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-07-15',
                 'estado' => 'pendiente',
                 'responsable' => 'Roberto Vásquez Herrera',
-                'monto' => 75000.00
+                'monto' => 75000.00,
+                'created_by' => $usuariosIds[5] ?? 1
             ],
             [
                 'nombre' => 'Dashboard de Analíticas',
@@ -78,7 +87,8 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-08-01',
                 'estado' => 'pendiente',
                 'responsable' => 'Diana Morales Ruiz',
-                'monto' => 90000.00
+                'monto' => 90000.00,
+                'created_by' => $usuariosIds[6] ?? 1
             ],
             [
                 'nombre' => 'Sistema de Recursos Humanos',
@@ -87,12 +97,15 @@ class ProyectoSeeder extends Seeder
                 'fecha_fin' => '2025-12-01',
                 'estado' => 'pendiente',
                 'responsable' => 'Fernando Castillo Pérez',
-                'monto' => 160000.00
+                'monto' => 160000.00,
+                'created_by' => $usuariosIds[7] ?? 1
             ]
         ];
 
         foreach ($proyectos as $proyecto) {
             Proyecto::create($proyecto);
         }
+        
+        $this->command->info('✅ Proyectos creados correctamente.');
     }
 }

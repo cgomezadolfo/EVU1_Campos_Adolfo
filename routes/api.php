@@ -12,6 +12,7 @@ use App\Http\Controllers\ObtenerProyectoPorIdController;
 use App\Http\Controllers\UFController;
 use App\Http\Controllers\AutenticacionController;
 use App\Http\Controllers\AutenticacionJWTController;
+use App\Http\Controllers\Api\ProyectoController;
 
 // ==============================================
 // RUTAS DE AUTENTICACIÓN Y AUTORIZACIÓN
@@ -53,7 +54,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Rutas específicas para la API de gestión de proyectos (protegidas con JWT)
+// Rutas específicas para la API de gestión de proyectos (protegidas con JWT) - COMENTADO TEMPORALMENTE
+/*
 Route::middleware(['jwt.auth'])->prefix('proyectos')->group(function () {
     
     // 1. Crear un nuevo proyecto
@@ -91,6 +93,7 @@ Route::middleware(['jwt.auth'])->prefix('proyectos')->group(function () {
         ->name('proyectos.verificar-existencia')
         ->where('id', '[0-9]+');
 });
+*/
 
 // Rutas para el servicio de Unidad de Fomento (UF)
 Route::prefix('uf')->group(function () {
@@ -118,4 +121,40 @@ Route::prefix('uf')->group(function () {
     // Limpiar cache de UF
     Route::delete('/cache', [UFController::class, 'limpiarCache'])
         ->name('uf.limpiar-cache');
+});
+
+// ==============================================
+// RUTAS API CRUD PROYECTOS (Protegidas con JWT)
+// ==============================================
+
+// Rutas API para CRUD completo de proyectos
+Route::middleware(['jwt.auth'])->prefix('proyectos')->group(function () {
+    
+    // POST /api/proyectos - Crear nuevo proyecto (201)
+    Route::post('/', [ProyectoController::class, 'store'])
+        ->name('api.proyectos.store');
+    
+    // GET /api/proyectos - Obtener todos los proyectos (200)
+    Route::get('/', [ProyectoController::class, 'index'])
+        ->name('api.proyectos.index');
+    
+    // GET /api/proyectos/{id} - Obtener proyecto por ID (200/404)
+    Route::get('/{id}', [ProyectoController::class, 'show'])
+        ->name('api.proyectos.show')
+        ->where('id', '[0-9]+');
+    
+    // PUT /api/proyectos/{id} - Actualizar proyecto por ID (200/404)
+    Route::put('/{id}', [ProyectoController::class, 'update'])
+        ->name('api.proyectos.update')
+        ->where('id', '[0-9]+');
+    
+    // PATCH /api/proyectos/{id} - Actualizar parcialmente proyecto por ID (200/404)
+    Route::patch('/{id}', [ProyectoController::class, 'update'])
+        ->name('api.proyectos.patch')
+        ->where('id', '[0-9]+');
+    
+    // DELETE /api/proyectos/{id} - Eliminar proyecto por ID (204/404)
+    Route::delete('/{id}', [ProyectoController::class, 'destroy'])
+        ->name('api.proyectos.destroy')
+        ->where('id', '[0-9]+');
 });
